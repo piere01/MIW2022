@@ -2,6 +2,7 @@ import math as m
 import numpy as np
 import json
 
+
 a = '11'
 b = 1
 c = '0'
@@ -173,7 +174,6 @@ def min_klasa(klasy, ile):
         suma = 0
         lista = sorted(klasy.get(key))
         for i in range(ile):
-            # suma += slownikKlas.get(key)[i]
             suma += lista[i]
         klasy[key] = suma
     return klasy
@@ -297,11 +297,11 @@ testowe = np.array([[2,1],[1,2],[3,3]])
 print(regresja_liniowa(testowe))
 
 def proj(u, a):
-    vu = np.dot(u.T, a)
-    uu = np.dot(u.T, u)
-    if uu == 0:
+    gorau = np.dot(u.T, a)
+    dolu = np.dot(u.T, u)
+    if dolu == 0:
         return u
-    return np.multiply(u, vu / uu)
+    return np.multiply(u, gorau / dolu)
 
 def macierz_QR(macierz):
     v = []
@@ -322,7 +322,37 @@ def macierz_QR(macierz):
         e.append(u[i] / len_u)
     Q = np.array(e)
     R = np.dot(Q, macierz)
+    print(np.around(Q.T, decimals=2))
+    print(np.around(R, decimals=2))
+    print(np.around(np.dot(Q.T, R), decimals=1))
     return Q
 
-q = macierz_QR(testowe)
-print(q)
+def macierz(a):
+    x=macierz_QR(a)
+    return np.dot(np.dot(x.T, a),x)
+
+def wartosc_wlasna_macierzy(a):
+    x = a
+    while (np.diag(x) - np.dot(x, np.ones((x.shape[0], 1))).T).all() > 0.01:
+        x = macierz(x)
+    return np.diag(x)
+
+def gauss(matrix):
+    column_len = len(matrix.T[0])
+
+    for x in range(column_len):
+        if matrix[x][x] == 0:
+            matrix[x][x] = 1
+            
+        for y in range(column_len):
+            if x != y:
+                factor = matrix[y][x]/matrix[x][x]
+
+                for z in range(column_len + 1):
+                    matrix[y][z] = matrix[y][z] - factor * matrix[x][z]
+    return [matrix[i][column_len]/matrix[i][i] for i in range(column_len)]
+
+
+
+
+
